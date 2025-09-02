@@ -15,6 +15,7 @@
     <script src="https://unpkg.com/cal-heatmap/dist/plugins/CalendarLabel.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   </head>
+  
   <body class="min-h-screen bg-jungle text-jungle/90 antialiased font-sans">
     <main class="min-h-screen flex items-start md:items-center justify-center p-6">
       <section class="w-full max-w-xl bg-white rounded-[28px] shadow-xl ring-1 ring-jungle/10 overflow-hidden">
@@ -70,6 +71,10 @@
         </div>
       </section>
     </main>
+
+<!-- 조건 제거 후 항상 포함 -->
+    <div id="push-notification-modal" style="display: none; ...">...</div>
+    <script src="{{ url_for('static', filename='script/push_integration.js') }}"></script>
   </body>
   <script src="/static/script/main.js"></script>
 </html>

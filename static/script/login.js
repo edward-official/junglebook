@@ -23,16 +23,18 @@ $(function () {
     $.ajax({
       url: "/auth/login",
       method: "POST",
-      contentType: "application/json; charset=UTF-8",
       dataType: "json",
-      data: JSON.stringify({
-        userId: v.data.userId,
+      data: {
+        userid: v.data.userId,
         password: v.data.password,
-      }),
+      },
       timeout: 15000,
     })
       .done(function (res) {
         if (res && res.result === "success") {
+          if (res.access_token) {
+            try { localStorage.setItem('access_token', res.access_token); } catch (_) {}
+          }
           window.location.href = "/main";
         } else {
           window.alert("로그인에 실패했습니다.");

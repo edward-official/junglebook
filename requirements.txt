@@ -1,3 +1,6 @@
 Flask
+flask-bcrypt
+flask-jwt-extended
+pymongo
 pywebpush
 python-dotenv

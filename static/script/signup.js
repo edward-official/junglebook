@@ -30,13 +30,12 @@ $(function () {
     $.ajax({
       url: "/auth/signup",
       method: "POST",
-      contentType: "application/json; charset=UTF-8",
       dataType: "json",
-      data: JSON.stringify({
-        userId: v.data.userId,
+      data: {
+        userid: v.data.userId,
         password: v.data.password,
-        userName: v.data.userName,
-      }),
+        username: v.data.userName,
+      },
       timeout: 15000,
     })
       .done(function (res) {

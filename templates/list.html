@@ -28,7 +28,7 @@
               <path fill-rule="evenodd" d="M12.78 15.28a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06L8.56 10l4.22 4.22a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd"/>
             </svg>
           </a>
-          <h1 class="mx-auto text-lg sm:text-xl font-extrabold text-jungle tracking-tight">TIL from 2025-09-01</h1>
+          <h1 class="mx-auto text-lg sm:text-xl font-extrabold text-jungle tracking-tight">TIL from {{ date or '' }}</h1>
           <span class="w-7"></span>
         </header>
 
@@ -48,62 +48,40 @@
           <!-- List (name + thumbnail only) -->
           <section>
             <div class="ring-1 ring-jungle/10 rounded-2xl bg-white overflow-hidden">
-              <div class="max-h-[60vh] md:max-h-[520px] overflow-y-auto scroll-rounded">
-                <ul id="tilList" class="divide-y divide-jungle/10">
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">홍길동(정글11기-01)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">홍</div>
+              <!-- Toolbar: Date (hidden, from Jinja) + Search + Sort -->
+              <div class="px-3 sm:px-4 py-3 border-b border-jungle/10 bg-white">
+                <div class="flex items-center gap-3">
+                  <!-- Search -->
+                  <div class="relative grow">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-jungle/40" aria-hidden="true">
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 3.89 9.43l3.59 3.59a.75.75 0 1 0 1.06-1.06l-3.59-3.59A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" clip-rule="evenodd"/>
+                      </svg>
+                    </span>
+                    <input id="search" name="search" type="search" placeholder="검색 (이름/아이디)"
+                      class="w-full pl-10 pr-3 py-2.5 rounded-xl bg-jungle/5 ring-1 ring-inset ring-jungle/10 text-[15px] placeholder:text-jungle/40 focus:outline-none focus:ring-2 focus:ring-accent/40" />
                   </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">김유신(정글11기-05)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">김</div>
+                  <!-- Sort control: only ascending/descending toggle -->
+                  <div class="shrink-0">
+                    <button id="sortDir" type="button" aria-label="정렬 방향 토글" title="정렬 방향 토글"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-jungle/5 ring-1 ring-inset ring-jungle/10 text-jungle/70 hover:bg-jungle/10">
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10.53 3.22a.75.75 0 0 0-1.06 0l-3.75 3.75a.75.75 0 1 0 1.06 1.06L9.25 5.81V16a.75.75 0 0 0 1.5 0V5.81l2.47 2.22a.75.75 0 1 0 1.06-1.06L10.53 3.22Z" clip-rule="evenodd"/>
+                      </svg>
+                      <span class="text-sm font-medium">오름차순</span>
+                    </button>
                   </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">이순신(정글11기-02)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">이</div>
-                  </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">장영실(정글11기-07)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">장</div>
-                  </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">강감찬(정글11기-03)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">강</div>
-                  </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">홍길동(정글11기-04)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">홍</div>
-                  </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">김유신(정글11기-06)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">김</div>
-                  </div>
-                </li>
-                <li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="text-[15px] sm:text-base font-semibold text-jungle">강감찬(정글11기-08)</div>
-                    <div class="w-12 h-12 rounded-xl grid place-items-center bg-accent/20 text-jungle font-bold ring-1 ring-inset ring-accent/30">강</div>
-                  </div>
-                </li>
-                </ul>
+                </div>
+              </div>
+
+              <div class="h-[60vh] md:h-[520px] overflow-y-auto scroll-rounded">
+                <ul id="tilList" class="divide-y divide-jungle/10"></ul>
               </div>
             </div>
           </section>
         </div>
       </section>
     </main>
+    <script src="{{ url_for('static', filename='script/list.js') }}"></script>
   </body>
 </html>

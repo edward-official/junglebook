@@ -6,7 +6,7 @@
     <title>TIL 목록</title>
     <meta name="theme-color" content="#1A2E2E" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/static/script/tailwind-config.js"></script>
+    <script src="{{ url_for('static', filename='script/tailwind-config.js') }}"></script>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
     <style>
@@ -22,7 +22,7 @@
       <section class="w-full max-w-xl bg-white rounded-[28px] shadow-xl ring-1 ring-jungle/10 overflow-hidden">
         <!-- Top bar -->
         <header class="px-4 sm:px-6 pt-5 pb-3 flex items-center gap-2">
-          <a href="/" aria-label="뒤로가기" class="p-2 -m-2 rounded-lg text-jungle/60 hover:bg-jungle/5 hover:text-jungle">
+          <a href="/main" aria-label="뒤로가기" class="p-2 -m-2 rounded-lg text-jungle/60 hover:bg-jungle/5 hover:text-jungle">
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M12.78 15.28a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06L8.56 10l4.22 4.22a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd"/>
             </svg>

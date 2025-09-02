@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
-    <script src="/static/script/tailwind-config.js"></script>
+    <script src="{{ url_for('static', filename='script/tailwind-config.js') }}"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
@@ -62,7 +62,7 @@
 
           <!-- CTA Button -->
           <div class="pt-2">
-            <a href="/til/today" class="block w-full text-center rounded-xl bg-neutral-700 text-white font-bold py-3 ring-1 ring-neutral-700/20 shadow transition hover:brightness-95 active:translate-y-px">
+            <a href="/list" class="block w-full text-center rounded-xl bg-neutral-700 text-white font-bold py-3 ring-1 ring-neutral-700/20 shadow transition hover:brightness-95 active:translate-y-px">
               오늘의 TIL 기록 보러가기
             </a>
           </div>

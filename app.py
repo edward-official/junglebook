@@ -33,11 +33,8 @@ class CustomJSONProvider(JSONProvider):
 
 
 app.json = CustomJSONProvider(app)
-<<<<<<< HEAD
 app.register_blueprint(render_blueprint)
-=======
 app.register_blueprint(auth_bp)
->>>>>>> 610c960 (login/signup complete)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager, set_access_cookies, unset_jwt_cookies
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -43,7 +43,9 @@ def login():
         return jsonify({"result": "fail", "msg": "invalid credentials"})
     
     access_token = create_access_token(identity=userid)
-    return jsonify({"result": "success", "access_token": access_token})
+    response = jsonify({"result": "success"})
+    set_access_cookies(response, access_token)
+    return response
 
 @auth_bp.route('/example', methods=['GET'])
 @jwt_required()

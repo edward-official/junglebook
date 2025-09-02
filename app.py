@@ -16,6 +16,10 @@ bcrypt = Bcrypt(app)
 app.config['DB'] = database
 app.config['BCRYPT'] = bcrypt
 app.config['JWT_SECRET_KEY'] = "super-secret-key"
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_COOKIE_SECURE"] = True
+app.config["JWT_COOKIE_SAMESITE"] = "Strict"
+app.config["JWT_COOKIE_CSRF_PROTECT"] = True
 jwt = JWTManager(app)
 
 

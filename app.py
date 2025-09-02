@@ -2,8 +2,8 @@ from bson import ObjectId
 from flask import Flask
 from flask.json.provider import JSONProvider
 import json
-from router.api_router import api_blueprint
-from router.view_router import reder_blueprint
+from routes.auth import api_blueprint
+from routes.view_router import reder_blueprint
 
 app = Flask(__name__)
 
@@ -23,8 +23,8 @@ class CustomJSONProvider(JSONProvider):
 
 
 app.json = CustomJSONProvider(app)
-app.register_blueprint(api_blueprint)
-app.register_blueprint(reder_blueprint)
+app.register_blueprint()
+app.register_blueprint()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

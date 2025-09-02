@@ -3,7 +3,7 @@ from flask import Flask
 from flask.json.provider import JSONProvider
 import json
 from routes.auth import api_blueprint
-from routes.view_router import reder_blueprint
+from routes.users import 
 
 app = Flask(__name__)
 

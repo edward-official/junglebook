@@ -30,20 +30,20 @@ $(function () {
     $.ajax({
       url: "/auth/signup",
       method: "POST",
-      contentType: "application/json; charset=UTF-8",
-      dataType: "json",
-      data: JSON.stringify({
+      // contentType: "application/json; charset=UTF-8",
+      // dataType: "json",
+      data: {
+        userName: v.data.userName,
         userId: v.data.userId,
         password: v.data.password,
-        userName: v.data.userName,
-      }),
+      },
       timeout: 15000,
     })
       .done(function (res) {
         if (res && res.result === "success") {
           window.alert("회원가입이 완료되었습니다. 로그인해 주세요.");
           window.location.href = "/login";
-        } else if (res.code == 'E1') {
+        } else if (res.code == "E1") {
           window.alert("이미 사용 중인 아이디입니다.");
         } else {
           const msg = (res && res.msg) || "회원가입에 실패했습니다.";

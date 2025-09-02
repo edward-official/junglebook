@@ -10,7 +10,7 @@ $(function () {
     if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요." };
     return { ok: true, data: { userId, password } };
   }
-  
+
   function submitLogin() {
     const v = validate();
     if (!v.ok) {
@@ -23,12 +23,12 @@ $(function () {
     $.ajax({
       url: "/auth/login",
       method: "POST",
-      contentType: "application/json; charset=UTF-8",
-      dataType: "json",
-      data: JSON.stringify({
+      // contentType: "application/json; charset=UTF-8",
+      // dataType: "json",
+      data: {
         userId: v.data.userId,
         password: v.data.password,
-      }),
+      },
       timeout: 15000,
     })
       .done(function (res) {

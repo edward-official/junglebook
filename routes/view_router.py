@@ -1,3 +1,4 @@
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager, set_access_cookies, unset_jwt_cookies
 from flask import Blueprint, render_template
 
 render_blueprint = Blueprint("main", __name__, url_prefix="/")
@@ -12,7 +13,10 @@ def signup():
     return render_template("signup.html")
 
 @render_blueprint.route("/main")
+@jwt_required()
 def dashboard():
+    current_user = get_jwt_identity()
+    print(current_user)
     return render_template("main.html")
 
 @render_blueprint.route("/list")

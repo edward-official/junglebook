@@ -5,29 +5,29 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
-    username = request.form.get('username')
-    userid = request.form.get('userid')
+    user_name = request.form.get('userName')
+    user_id = request.form.get('userId')
     password = request.form.get('password')
-    if not userid or not password:
+    if not user_id or not password:
         return jsonify({"result": "fail", "code": "E0", "msg": "userid/password required"})
 
     database = current_app.config['DB']
     users = database.users
-    if users.find_one({"userid": userid}):
+    if users.find_one({"userid": user_id}):
         return jsonify({"result": "fail", "code": "E1", "msg": "userid already exists"})
     
     bcrypt = current_app.config['BCRYPT']
     hashed = bcrypt.generate_password_hash(password).decode('utf-8')
     users.insert_one({
-        "username": username,
-        "userid": userid,
+        "username": user_name,
+        "userid": user_id,
         "password": hashed
     })
     return jsonify({"result": "success"})
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    userid = request.form.get('userid')
+    userid = request.form.get('userId')
     password = request.form.get('password')
     if not userid or not password:
         return jsonify({"result": "fail", "msg": "userid/password required"})
@@ -47,8 +47,8 @@ def login():
     set_access_cookies(response, access_token)
     return response
 
-@auth_bp.route('/example', methods=['GET'])
+@auth_bp.route('/main', methods=['GET'])
 @jwt_required()
-def example():
+def main():
     current_user = get_jwt_identity()
-    return jsonify({"msg": f"Hello, {current_user}! This is a example route."})
+    return jsonify({"msg": f"Hello, {current_user}! This is a main route."})

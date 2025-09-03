@@ -70,10 +70,19 @@ def commit():
     )
     return jsonify({"result": "success", "status": "updated"})
   else:
+    learned_date_obj = datetime.strptime(learned_date, "%Y-%m-%d").date()
+    previous_date_obj = learned_date_obj - timedelta(days=1)
+    previous_date_str = previous_date_obj.strftime("%Y-%m-%d")
+    previous_til = database.tils.find_one({
+      "username": user_name,
+      "learnedDate": previous_date_str,
+      "isCommitOnTime": True,
+    })
+    previous_streak = previous_til.get("streak") if previous_til else 0
+    streak = previous_streak + 1 if is_commit_on_time else 0
+
     is_commit_on_time = datetime.strptime(learned_date, "%Y-%m-%d").date()==commit_date.date()
-    streak = 0
-    if is_commit_on_time:
-      streak = 1
+
     database.tils.insert_one({
       "username": user_name,
       "learnedDate": learned_date,
@@ -81,6 +90,6 @@ def commit():
       "updatedAt": None,
       "url": url,
       "isCommitOnTime": is_commit_on_time,
-      "streak": streak
+      "streak": streak,
     })
     return jsonify({"result": "success", "status": "created"})

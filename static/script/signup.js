@@ -9,11 +9,12 @@ $(function () {
     const password = $("#password").val();
     const passwordConfirm = $("#password_confirm").val();
 
-    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요." };
-    if (!userName) return { ok: false, msg: "이름을 입력해 주세요." };
-    if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요." };
+    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요.", focus: "#id" };
+    if (!userName) return { ok: false, msg: "이름을 입력해 주세요.", focus: "#name" };
+    if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요.", focus: "#password" };
+    if (!passwordConfirm) return { ok: false, msg: "비밀번호 확인을 입력해 주세요.", focus: "#password_confirm" };
     if (password !== passwordConfirm)
-      return { ok: false, msg: "비밀번호가 일치하지 않습니다." };
+      return { ok: false, msg: "비밀번호가 일치하지 않습니다.", focus: "#password_confirm" };
 
     return { ok: true, data: { userId, userName, password } };
   }
@@ -22,6 +23,13 @@ $(function () {
     const v = validateInputs();
     if (!v.ok) {
       window.alert(v.msg);
+      if (v.focus) {
+        const el = document.querySelector(v.focus);
+        if (el) {
+          el.focus();
+          if (typeof el.select === 'function') el.select();
+        }
+      }
       return;
     }
 

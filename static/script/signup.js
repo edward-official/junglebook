@@ -4,18 +4,18 @@ $(function () {
   const btnEl = $btn.get(0);
 
   function validateInputs() {
-    const userId = $("#id").val().trim();
-    const userName = $("#name").val().trim();
+    const userid = $("#id").val().trim();
+    const username = $("#name").val().trim();
     const password = $("#password").val();
     const passwordConfirm = $("#password_confirm").val();
 
-    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요." };
-    if (!userName) return { ok: false, msg: "이름을 입력해 주세요." };
+    if (!userid) return { ok: false, msg: "아이디를 입력해 주세요." };
+    if (!username) return { ok: false, msg: "이름을 입력해 주세요." };
     if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요." };
     if (password !== passwordConfirm)
       return { ok: false, msg: "비밀번호가 일치하지 않습니다." };
 
-    return { ok: true, data: { userId, userName, password } };
+    return { ok: true, data: { userid, username, password } };
   }
 
   function submitSignup() {
@@ -32,9 +32,9 @@ $(function () {
       method: "POST",
       dataType: "json",
       data: {
-        userid: v.data.userId,
+        userid: v.data.userid,
+        username: v.data.username,
         password: v.data.password,
-        username: v.data.userName,
       },
       timeout: 15000,
     })
@@ -49,7 +49,8 @@ $(function () {
           window.alert(msg);
         }
       })
-      .fail(function (_xhr) {
+      .fail(function (xhr) {
+        console.error("회원가입 오류:", xhr.responseText);
         window.alert("회원가입 요청 중 오류가 발생했습니다.");
       })
       .always(function () {

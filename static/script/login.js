@@ -4,11 +4,11 @@ $(function () {
   const btnEl = $btn.get(0);
 
   function validate() {
-    const userId = $("#id").val().trim();
+    const userid = $("#id").val().trim();
     const password = $("#password").val();
-    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요." };
+    if (!userid) return { ok: false, msg: "아이디를 입력해 주세요." };
     if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요." };
-    return { ok: true, data: { userId, password } };
+    return { ok: true, data: { userid, password } };
   }
   
   function submitLogin() {
@@ -25,7 +25,7 @@ $(function () {
       method: "POST",
       dataType: "json",
       data: {
-        userid: v.data.userId,
+        userid: v.data.userid,
         password: v.data.password,
       },
       timeout: 15000,
@@ -40,7 +40,8 @@ $(function () {
           window.alert("로그인에 실패했습니다.");
         }
       })
-      .fail(function (_xhr) {
+      .fail(function (xhr) {
+        console.error("로그인 오류:", xhr.responseText);
         window.alert("로그인 요청 중 오류가 발생했습니다.");
       })
       .always(function () {

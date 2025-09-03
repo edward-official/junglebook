@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 
 render_blueprint = Blueprint("main", __name__, url_prefix="/")
 
+
+@render_blueprint.route("/")
+def index():
+    return redirect(url_for("main.login"))
 
 @render_blueprint.route("/login")
 def login():

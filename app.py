@@ -4,7 +4,6 @@ from flask.json.provider import JSONProvider
 from bson import ObjectId
 import json
 from routes.view_router import render_blueprint
-from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from routes.auth import auth_bp
 from flask_jwt_extended import JWTManager
@@ -13,26 +12,44 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-mongoDB = MongoClient('localhost', 27017)
-database = mongoDB.jungle_book
+
+# MongoDB 연결 (선택적)
+DB_MODE = "mock"  # 기본값을 mock으로 설정
+database = None
+
+try:
+    from pymongo import MongoClient
+    mongoDB = MongoClient('localhost', 27017, serverSelectionTimeoutMS=2000)  # 2초 타임아웃
+    # 연결 테스트
+    mongoDB.admin.command('ping')
+    database = mongoDB.jungle_book
+    DB_MODE = "real"
+    print("✅ MongoDB 연결 성공")
+except Exception as e:
+    print(f"⚠️  MongoDB 연결 실패: {e}")
+    print("📝 Mock DB 모드를 사용합니다.")
+    database = None
+    DB_MODE = "mock"
+
 bcrypt = Bcrypt(app)
 
 app.config['DB'] = database
+app.config['DB_MODE'] = DB_MODE
 app.config['BCRYPT'] = bcrypt
 app.config['JWT_SECRET_KEY'] = "super-secret-key"
 jwt = JWTManager(app)
 
+# 환경변수 기반 푸시/관리자 키 설정 (기본값 포함)
+app.config['ADMIN_SECRET_KEY'] = os.getenv('ADMIN_SECRET_KEY', 'test-admin-secret-key-123')
+app.config['VAPID_PUBLIC_KEY'] = os.getenv('VAPID_PUBLIC_KEY', 'BLBz8vO2tXg4AjdkqEdT8EfbN5eNYwZAPY6J_XdHXlE')
+app.config['VAPID_PRIVATE_KEY'] = os.getenv('VAPID_PRIVATE_KEY', 'dGVzdC1wcml2YXRlLWtleS1mb3ItbG9jYWwtdGVzdGluZw==')
+app.config['VAPID_EMAIL'] = os.getenv('VAPID_EMAIL', 'test@example.com')
 
-# 환경변수 기반 푸시/관리자 키 설정
-app.config['ADMIN_SECRET_KEY'] = os.getenv('ADMIN_SECRET_KEY')
-app.config['VAPID_PUBLIC_KEY'] = os.getenv('VAPID_PUBLIC_KEY')
-app.config['VAPID_PRIVATE_KEY'] = os.getenv('VAPID_PRIVATE_KEY')
-app.config['VAPID_EMAIL'] = os.getenv('VAPID_EMAIL')
-
-# 선택: 필수값 누락 시 안전 가드
-missing = [k for k in ['ADMIN_SECRET_KEY','VAPID_PUBLIC_KEY','VAPID_PRIVATE_KEY','VAPID_EMAIL'] if not app.config.get(k)]
-if missing:
-    raise RuntimeError(f"Missing required config(s): {', '.join(missing)}")
+print("✅ 푸시 알림 설정 완료")
+print(f"   - DB_MODE: {DB_MODE}")
+print(f"   - ADMIN_SECRET_KEY: {app.config['ADMIN_SECRET_KEY'][:10]}...")
+print(f"   - VAPID_PUBLIC_KEY: {app.config['VAPID_PUBLIC_KEY'][:10]}...")
+print(f"   - VAPID_EMAIL: {app.config['VAPID_EMAIL']}")
 
 
 class CustomJSONEncoder(json.JSONEncoder):

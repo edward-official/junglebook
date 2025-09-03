@@ -1,9 +1,11 @@
 import os
 import json
 from datetime import datetime, timedelta
+from flask import current_app
 
 # --- 임시(Mock) DB 설정 ---
 MOCK_DB_FILE = 'mock_user_subscriptions.json'
+MOCK_USERS_FILE = 'mock_users.json'
 
 def _load_mock_db():
     if not os.path.exists(MOCK_DB_FILE):
@@ -18,8 +20,132 @@ def _save_mock_db(db):
     with open(MOCK_DB_FILE, 'w') as f:
         json.dump(db, f, indent=4)
 
+def _load_mock_users():
+    if not os.path.exists(MOCK_USERS_FILE):
+        return {}
+    try:
+        with open(MOCK_USERS_FILE, 'r') as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError):
+        return {}
+
+def _save_mock_users(users):
+    with open(MOCK_USERS_FILE, 'w') as f:
+        json.dump(users, f, indent=4)
+
 # ============================
-# 1. 임시(Mock) DB 함수들
+# 1. 사용자 관리 함수들
+# ============================
+def create_user(userid, username, password):
+    """사용자 생성"""
+    try:
+        db_mode = current_app.config.get('DB_MODE', 'mock')
+        
+        if db_mode == 'real':
+            return _create_user_real(userid, username, password)
+        else:
+            return _create_user_mock(userid, username, password)
+    except Exception as e:
+        print(f"사용자 생성 오류: {e}")
+        return {'success': False, 'message': '사용자 생성 중 오류가 발생했습니다.'}
+
+def authenticate_user(userid, password):
+    """사용자 인증"""
+    try:
+        db_mode = current_app.config.get('DB_MODE', 'mock')
+        
+        if db_mode == 'real':
+            return _authenticate_user_real(userid, password)
+        else:
+            return _authenticate_user_mock(userid, password)
+    except Exception as e:
+        print(f"사용자 인증 오류: {e}")
+        return {'success': False, 'message': '사용자 인증 중 오류가 발생했습니다.'}
+
+def _create_user_mock(userid, username, password):
+    """Mock DB에 사용자 생성"""
+    users = _load_mock_users()
+    
+    if userid in users:
+        return {'success': False, 'message': '이미 사용 중인 아이디입니다.'}
+    
+    bcrypt = current_app.config['BCRYPT']
+    hashed = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    users[userid] = {
+        "username": username,
+        "userid": userid,
+        "password": hashed,
+        "created_at": datetime.utcnow().isoformat()
+    }
+    
+    _save_mock_users(users)
+    print(f"📝 Mock DB 사용자 생성: {userid}")
+    return {'success': True, 'message': '회원가입이 완료되었습니다.'}
+
+def _authenticate_user_mock(userid, password):
+    """Mock DB에서 사용자 인증"""
+    users = _load_mock_users()
+    
+    if userid not in users:
+        return {'success': False, 'message': '아이디 또는 비밀번호가 올바르지 않습니다.'}
+    
+    user = users[userid]
+    bcrypt = current_app.config['BCRYPT']
+    
+    if not bcrypt.check_password_hash(user['password'], password):
+        return {'success': False, 'message': '아이디 또는 비밀번호가 올바르지 않습니다.'}
+    
+    print(f"📝 Mock DB 사용자 로그인: {userid}")
+    return {'success': True, 'message': '로그인 성공'}
+
+def _create_user_real(userid, username, password):
+    """실제 DB에 사용자 생성"""
+    try:
+        database = current_app.config['DB']
+        users = database.users
+        
+        if users.find_one({"userid": userid}):
+            return {'success': False, 'message': '이미 사용 중인 아이디입니다.'}
+        
+        bcrypt = current_app.config['BCRYPT']
+        hashed = bcrypt.generate_password_hash(password).decode('utf-8')
+        
+        users.insert_one({
+            "username": username,
+            "userid": userid,
+            "password": hashed,
+            "created_at": datetime.utcnow()
+        })
+        
+        print(f"📝 Real DB 사용자 생성: {userid}")
+        return {'success': True, 'message': '회원가입이 완료되었습니다.'}
+    except Exception as e:
+        print(f"실제 DB 사용자 생성 오류: {e}")
+        return {'success': False, 'message': '데이터베이스 오류가 발생했습니다.'}
+
+def _authenticate_user_real(userid, password):
+    """실제 DB에서 사용자 인증"""
+    try:
+        database = current_app.config['DB']
+        users = database.users
+        
+        user = users.find_one({"userid": userid})
+        if not user:
+            return {'success': False, 'message': '아이디 또는 비밀번호가 올바르지 않습니다.'}
+        
+        bcrypt = current_app.config['BCRYPT']
+        if not bcrypt.check_password_hash(user['password'], password):
+            return {'success': False, 'message': '아이디 또는 비밀번호가 올바르지 않습니다.'}
+        
+        print(f"📝 Real DB 사용자 로그인: {userid}")
+        return {'success': True, 'message': '로그인 성공'}
+    except Exception as e:
+        print(f"실제 DB 사용자 인증 오류: {e}")
+        return {'success': False, 'message': '데이터베이스 오류가 발생했습니다.'}
+
+# ============================
+# 2. 푸시 알림 관련 함수들 (기존)
 # ============================
 def mock_save_subscription(user_id, subscription_data):
     db = _load_mock_db()
@@ -61,9 +187,6 @@ def mock_get_inactive_users(days_inactive):
                     inactive_users.append(mock_user)
     return inactive_users
 
-# ============================
-# 2. 실제 DB 함수들 (나중에 완성)
-# ============================
 def real_save_subscription(user_id, subscription_data):
     from models import User  # 실제 User 모델 임포트
     from app import db  # 실제 db 객체 임포트

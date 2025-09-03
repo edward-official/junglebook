@@ -54,7 +54,7 @@ def commit():
   url = request.form.get("url")
 
   learned_date = request.form.get("date")
-  commit_date = datetime.now(timezone.utc)
+  commit_date = datetime.now()
 
   database = current_app.config["DB"]
   existing = database.tils.find_one({
@@ -66,7 +66,7 @@ def commit():
     database.tils.update_one(
       {"_id": existing["_id"]},
       {"$set": {
-        "updatedAt": datetime.now(timezone.utc),
+        "updatedAt": datetime.now(),
         "url": url,
       }}
     )

@@ -6,12 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로그인</title>
   <meta name="theme-color" content="#1A2E2E" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-96x96.png') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-16x16.png') }}" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
   <script src="{{ url_for('static', filename='script/tailwind-config.js') }}"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='script/common.js') }}"></script>
   <script src="{{ url_for('static', filename='script/login.js') }}" defer></script>
 </head>
@@ -22,8 +27,8 @@
       aria-labelledby="login-title" aria-describedby="login-desc">
       <header class="px-6 pt-6">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg grid place-items-center bg-jungle text-accent font-extrabold"
-            aria-hidden="true">J</div>
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="JungleBook" 
+            class="w-8 h-8 rounded-lg object-cover" />
           <div>
             <h1 id="login-title" class="text-lg font-bold text-jungle">로그인</h1>
             <p id="login-desc" class="mt-1 text-sm text-jungle/60">계정에 접속해 JungleBook을 시작하세요</p>
@@ -59,7 +64,7 @@
       </footer>
     </section>
   </main>
-  
+
 </body>
 
 </html>

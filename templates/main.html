@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>메인</title>
   <meta name="theme-color" content="#1A2E2E" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-96x96.png') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon-16x16.png') }}" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet"
@@ -19,8 +23,8 @@
   <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='script/common.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/main.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='script/common.js') }}"></script>
+  <script src="{{ url_for('static', filename='script/main.js') }}" defer></script>
 </head>
 
 <body class="min-h-screen bg-jungle text-jungle/90 antialiased font-sans">
@@ -29,7 +33,8 @@
       <!-- Header / Streak -->
       <header class="px-6 sm:px-8 pt-8">
         <div class="flex items-center justify-end">
-          <button id="logoutBtn" class="px-3 py-1.5 text-sm rounded-lg ring-1 ring-jungle/10 text-jungle/70 hover:bg-jungle/5">로그아웃</button>
+          <button id="logoutBtn"
+            class="px-3 py-1.5 text-sm rounded-lg ring-1 ring-jungle/10 text-jungle/70 hover:bg-jungle/5">로그아웃</button>
         </div>
         <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold text-jungle tracking-tight flex items-center gap-2">
           <span>2025년 10월 2일</span>
@@ -85,4 +90,5 @@
     </section>
   </main>
 </body>
+
 </html>

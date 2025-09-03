@@ -1,6 +1,6 @@
 $(function () {
   const $form = $("form");
-  const $btn = $("button[aria-label='회원가입 버튼']");
+  const $btn = $("#signupBtn");
   const btnEl = $btn.get(0);
 
   function validateInputs() {
@@ -30,8 +30,6 @@ $(function () {
     $.ajax({
       url: "/auth/signup",
       method: "POST",
-      // contentType: "application/json; charset=UTF-8",
-      // dataType: "json",
       data: {
         userName: v.data.userName,
         userId: v.data.userId,

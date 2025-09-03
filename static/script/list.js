@@ -56,21 +56,10 @@ $(function () {
     }
   }
 
-  function parseCreatedAt(s) {
-    if (!s) return 0;
-    // Expect: yyyy-mm-dd hh:mm:ss
-    const parts = String(s).split(/[ T]/);
-    const d = (parts[0] || '').split('-');
-    const t = (parts[1] || '00:00:00').split(':');
-    const Y = +d[0] || 0, M = (+d[1] || 1) - 1, D = +d[2] || 1;
-    const h = +t[0] || 0, m = +t[1] || 0, sec = +t[2] || 0;
-    return new Date(Y, M, D, h, m, sec).getTime();
-  }
-
   function sortByCreatedAt(items) {
     return items.slice().sort(function (a, b) {
-      const ta = parseCreatedAt(a.createdAt);
-      const tb = parseCreatedAt(b.createdAt);
+      const ta = new Date(a.createdAt.replace(' ', 'T'));
+      const tb = new Date(b.createdAt.replace(' ', 'T'));
       return sortAsc ? ta - tb : tb - ta;
     });
   }

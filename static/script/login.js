@@ -23,8 +23,6 @@ $(function () {
     $.ajax({
       url: "/auth/login",
       method: "POST",
-      // contentType: "application/json; charset=UTF-8",
-      // dataType: "json",
       data: {
         userId: v.data.userId,
         password: v.data.password,

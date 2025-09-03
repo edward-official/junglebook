@@ -13,10 +13,7 @@ def signup():
     return render_template("signup.html")
 
 @render_blueprint.route("/main")
-@jwt_required()
 def dashboard():
-    current_user = get_jwt_identity()
-    print(current_user)
     return render_template("main.html")
 
 @render_blueprint.route("/list")

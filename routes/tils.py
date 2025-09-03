@@ -12,8 +12,8 @@ def day():
 @tils_bp.route("/heatmap", methods=["GET"])
 def heatmap():
   pipeline = [
-    {"$group": {"_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}}, "count": {"$sum": 1}}},
-    {"$project": {"date": "$_id", "count": 1, "_id": 0}},
+    {"$group": {"_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}}, "numberOfPosts": {"$sum": 1}}},
+    {"$project": {"date": "$_id", "numberOfPosts": 1, "_id": 0}},
     {"$sort": {"date": 1}}
   ]
   return jsonify(list(current_app.config["DB"].tils.aggregate(pipeline)))

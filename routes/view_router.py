@@ -1,10 +1,6 @@
 from datetime import datetime
 from flask_jwt_extended import get_jwt_identity, jwt_required
-<<<<<<< HEAD
 from flask import Blueprint, render_template, redirect, url_for, request, current_app
-=======
-from flask import Blueprint, render_template, redirect, url_for, current_app
->>>>>>> f0dee4b (mongoDB tils collection error fixed)
 
 render_blueprint = Blueprint("main", __name__, url_prefix="/")
 

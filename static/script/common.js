@@ -1,6 +1,6 @@
 (function (window) {
   const App = (window.App = window.App || {});
-
+  
   // DOM helpers
   App.dom = {
     // Vanilla-only: accepts Element, NodeList, Array<Element>, or selector string
@@ -22,5 +22,7 @@
       });
     },
   };
+
+  $.ajaxSetup({ xhrFields: { withCredentials: true } });
 
 })(window);

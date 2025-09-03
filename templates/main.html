@@ -19,6 +19,8 @@
   <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='script/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/list.js') }}" defer></script>
 </head>
 
 <body class="min-h-screen bg-jungle text-jungle/90 antialiased font-sans">
@@ -83,6 +85,4 @@
     </section>
   </main>
 </body>
-<script src="/static/script/main.js"></script>
-
 </html>

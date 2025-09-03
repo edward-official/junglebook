@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='script/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/list.js') }}" defer></script>
     <style>
       /* Subtle gray-only scrollbar; track is transparent */
       .scroll-rounded { scrollbar-width: thin; scrollbar-color: #bdbdbd transparent; }
@@ -82,6 +84,5 @@
         </div>
       </section>
     </main>
-    <script src="{{ url_for('static', filename='script/list.js') }}"></script>
   </body>
 </html>

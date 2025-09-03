@@ -48,7 +48,9 @@ def heatmap():
 def commit():
   current_user = get_jwt_identity()
   user_name = current_user
+
   url = request.form.get("url")
+
   learned_date = request.form.get("date")
   commit_date = datetime.now(timezone.utc)
 
@@ -63,16 +65,22 @@ def commit():
       {"_id": existing["_id"]},
       {"$set": {
         "updatedAt": datetime.now(timezone.utc),
-        "url": url
+        "url": url,
       }}
     )
     return jsonify({"result": "success", "status": "updated"})
   else:
+    is_commit_on_time = datetime.strptime(learned_date, "%Y-%m-%d").date()==commit_date.date()
+    streak = 0
+    if is_commit_on_time:
+      streak = 1
     database.tils.insert_one({
       "username": user_name,
       "learnedDate": learned_date,
       "createdAt": commit_date,
       "updatedAt": None,
-      "url": url
+      "url": url,
+      "isCommitOnTime": is_commit_on_time,
+      "streak": streak
     })
     return jsonify({"result": "success", "status": "created"})

@@ -7,8 +7,6 @@ $(() => {
   function renderHeatmap(heatMapData) {
     const data = Array.isArray(heatMapData?.data) ? heatMapData.data : [];
     const totalUser = Number(heatMapData?.totalUser) || 0;
-    const first = data[0]?.date ? new Date(data[0].date) : new Date();
-    const start = new Date(first.getFullYear(), first.getMonth(), 1);
 
     cal.paint({
       data: { source: data, x: 'date', y: 'numberOfPosts' },
@@ -21,13 +19,12 @@ $(() => {
         }
       },
       domain: { type: "month", label: { text: 'MMM', textAlign: 'start', position: 'top' } },
-      subDomain: { type: 'ghDay', radius: 2, width: 15, height: 15, gutter: 5},
-      start,
-      date: { highlight: [new Date(), new Date("2026-01-29")] },
+      subDomain: { type: 'ghDay', radius: 2, width: 15, height: 15, gutter: 5 },
+      date: { start: new Date("2025-09-01"), highlight: [new Date(Date.now() + 9*3600*1000), new Date("2026-01-29")], locale: 'ko' },
       range: 5,
     }, [[
       CalendarLabel,
-      { width: 30, textAlign: 'start', text: () => dayjs.weekdaysShort().map((d, i) => (i % 2 == 0 ? '' : d)), padding: [25, 0, 0, 0] }
+      { width: 15, textAlign: 'start', text: () => dayjs.weekdaysShort().map((d, i) => (i % 2 == 0 ? '' : d)), padding: [25, 0, 0, 0] }
     ], [
       Tooltip,
       { text: (date, value, dayjsDate) => `${dayjsDate.format('YYYY-MM-DD')}<br/>참여자 수: ${value || 0} / ${totalUser}` }

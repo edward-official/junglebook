@@ -17,10 +17,11 @@ import os
 class Config:
     SCHEDULER_API_ENABLED = True
 app = Flask(__name__)
-mongoDB = MongoClient('localhost', 27017)
+
+load_dotenv()
+mongoDB = MongoClient(os.getenv("DB_HOST", "localhost"), 27017)
 database = mongoDB.jungle_book
 bcrypt = Bcrypt(app)
-load_dotenv()
 
 app.config['DB'] = database
 app.config['BCRYPT'] = bcrypt

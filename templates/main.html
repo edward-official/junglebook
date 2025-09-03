@@ -34,8 +34,16 @@
       <!-- Header / Streak -->
       <header class="px-6 sm:px-8 pt-8">
         <div class="flex items-center justify-end">
-          <button id="logoutBtn"
-            class="px-3 py-1.5 text-sm rounded-lg ring-1 ring-jungle/10 text-jungle/70 hover:bg-jungle/5">로그아웃</button>
+          <button id="logoutBtn" aria-label="로그아웃" title="로그아웃"
+            class="p-2 -m-2 rounded-lg text-jungle/60 hover:bg-jungle/5 hover:text-jungle">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <!-- Door frame: left, top, bottom -->
+              <path d="M4 4h10M4 20h10M4 4v16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Arrow to the right -->
+              <path d="M14 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M18 8l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
         <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold text-jungle tracking-tight flex items-center gap-2">
           <span>2025년 10월 2일</span>
@@ -90,18 +98,25 @@
       </div>
     </section>
   </main>
-      <!-- 푸시 알림 구독 요청 팝업(모달) -->
-      <div id="push-notification-modal" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; text-align: center; border: 1px solid #ddd;">
-        <h4 style="margin-top: 0;">알림을 허용하시겠어요?</h4>
-        <p style="margin-bottom: 20px; font-size: 14px; color: #555;">허용해주시면 장기간 미사용 시 재방문을 위한 알림을 보내드립니다.</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button id="push-accept-btn" style="padding: 8px 16px; border: none; background-color: #007bff; color: white; border-radius: 5px; cursor: pointer;">허용</button>
-            <button id="push-deny-btn" style="padding: 8px 16px; border: 1px solid #ccc; background-color: #f0f0f0; border-radius: 5px; cursor: pointer;">나중에</button>
-        </div>
+  <!-- 푸시 알림 구독 요청 팝업(모달) -->
+  <div id="push-notification-modal" style="display: none;" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] w-[min(92vw,28rem)]
+                  rounded-xl bg-white ring-1 ring-jungle/10 shadow-xl px-5 py-4 text-center">
+    <h4 class="m-0 text-s font-bold text-jungle">알림을 허용하시겠어요?</h4>
+    <p class="mt-2 mb-4 text-sm text-jungle/60">허용해주시면 장기간 미사용 시 재방문을 위한 알림을 보내드립니다.</p>
+    <div class="flex items-center justify-center gap-2">
+      <button id="push-accept-btn"
+        class="px-3.5 py-2 rounded-lg bg-accent text-jungle font-semibold ring-1 ring-accent/30 shadow transition hover:brightness-95 active:translate-y-px">
+        허용
+      </button>
+      <button id="push-deny-btn"
+        class="px-3.5 py-2 rounded-lg bg-jungle/5 text-jungle ring-1 ring-jungle/10 transition hover:bg-jungle/10">
+        나중에
+      </button>
     </div>
+  </div>
 
-    <!-- 푸시 알림 통합 스크립트 -->
-    <script src="{{ url_for('static', filename='script/push_integration.js') }}"></script>
+  <!-- 푸시 알림 통합 스크립트 -->
+  <script src="{{ url_for('static', filename='script/push_integration.js') }}"></script>
 </body>
 
 </html>

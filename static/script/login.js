@@ -6,8 +6,8 @@ $(function () {
   function validate() {
     const userId = $("#id").val().trim();
     const password = $("#password").val();
-    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요." };
-    if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요." };
+    if (!userId) return { ok: false, msg: "아이디를 입력해 주세요.", focus: "#id" };
+    if (!password) return { ok: false, msg: "비밀번호를 입력해 주세요.", focus: "#password" };
     return { ok: true, data: { userId, password } };
   }
 
@@ -15,6 +15,14 @@ $(function () {
     const v = validate();
     if (!v.ok) {
       window.alert(v.msg);
+      // 경고 확인 후 해당 입력으로 포커스 이동
+      if (v.focus) {
+        const el = document.querySelector(v.focus);
+        if (el) {
+          el.focus();
+          if (typeof el.select === 'function') el.select();
+        }
+      }
       return;
     }
 
@@ -34,6 +42,7 @@ $(function () {
           window.location.href = "/main";
         } else {
           window.alert("로그인에 실패했습니다.");
+          $("#password").val("");
         }
       })
       .fail(function (_xhr) {

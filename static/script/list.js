@@ -1,6 +1,7 @@
 $(function () {
   const dateVal = new URLSearchParams(window.location.search).get("date");
   let sortAsc = true; // 기본: createdAt 오름차순
+  let listItems = [];
 
   $("#search").on("input", applySearch);
 
@@ -19,8 +20,8 @@ $(function () {
     timeout: 15000,
   })
     .done(function (res) {
-      const items = Array.isArray(res?.data) ? res.data : [];
-      renderList(items);
+      listItems = Array.isArray(res?.data) ? res.data : [];
+      renderList(listItems);
     })
     .fail(function () {
       window.alert("목록을 가져오는 중 오류가 발생했습니다.");
@@ -36,19 +37,19 @@ $(function () {
     const thumb = getThumbUrl(href);
 
     return (
-      '<li class="px-3 sm:px-4 py-2.5 hover:bg-jungle/5 transition">' +
+      '<li class="px-3 sm:px-4 py-2.5 hover:bg-accent/10 transition">' +
       '<div class="flex items-center justify-between gap-3">' +
       '<div class="text-[15px] sm:text-base font-semibold text-jungle">' +
       safeName +
       "</div>" +
       '<a href="' +
       safeHref +
-      '" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center">' +
+      '" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center bg-white ring-1 ring-accent/20 hover:ring-accent/40 shadow-sm">' +
       (thumb
         ? '<img src="' +
-          thumb +
-          '" alt="" class="w-full h-full object-cover" />'
-        : '<span class="text-jungle font-bold">↗</span>') +
+        thumb +
+        '" alt="" class="w-full h-full object-cover" />'
+        : '<span class="text-accent font-bold">↗</span>') +
       "</a>" +
       "</div>" +
       "</li>"
@@ -77,19 +78,13 @@ $(function () {
     });
   }
 
-  function renderList(items, search) {
+  function renderList(items) {
     const $ul = $("#tilList");
     if (!items || items.length === 0) {
-      const msgs = [
-        "지금 쓰면 1등!",
-        "TIL쓰는 너가 가장 멋져",
-        "아무도 등록 안함 ㅠㅠ",
-      ];
-      const msg = msgs[Math.floor(Math.random() * msgs.length)];
       $ul.html(
         '<li class="px-3 sm:px-4 py-6 text-center text-sm text-jungle/60">' +
-          (search ? "검색 결과가 없습니다." : msg) +
-          "</li>"
+        (listItems.length !== 0 && items.length === 0 ? "검색 결과가 없습니다." : "등록된 TIL이 없습니다.") +
+        "</li>"
       );
       return;
     }
@@ -99,19 +94,24 @@ $(function () {
 
   function applySearch() {
     const q = ($("#search").val() || "").toLowerCase().trim();
-    if (!q) return renderList(allItems);
-    const filtered = allItems.filter(function (it) {
+    if (!q) return renderList(listItems);
+    const filtered = listItems.filter(function (it) {
       return (
         (it.userName || "").toLowerCase().includes(q) ||
         (it.url || "").toLowerCase().includes(q)
       );
     });
-    renderList(filtered, true);
+    renderList(filtered);
   }
 
   function updateSortLabel() {
     const $label = $("#sortDir span");
     if ($label.length) $label.text(sortAsc ? "오름차순" : "내림차순");
+    const $icon = $("#sortDir svg");
+    if ($icon.length) {
+      // 내림차순일 때 화살표를 아래로 보이게 회전
+      $icon.toggleClass("rotate-180", !sortAsc);
+    }
   }
 
   // 저장/수정: 상단 입력 URL을 /tils/commit에 전송

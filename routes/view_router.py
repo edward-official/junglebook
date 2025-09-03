@@ -62,7 +62,7 @@ def list():
 
     data = database.tils.find_one({"username": current_user, "learnedDate": date})
 
-    return render_template("list.html", url=data["url"] if data else "", isFuture=date > today)
+    return render_template("list.html", url=data["url"] if data else "", isFuture=date > today, date=date)
 
 def is_valid_date(date_str):
     try:

@@ -63,7 +63,7 @@ def dashboard():
         "main.html",
         my_best_streak = my_best_streak,
         my_streak = max(streak_today, streak_yesterday),
-        my_month = f"{numberOfDaysWithCommitThisMonth}/{days_so_far}",
+        my_month = f"{numberOfDaysWithCommitThisMonth * 100 / days_so_far}%",
         today_til_count = today_til_count,
         yesterday_til_count = yesterday_til_count,
         total_user_count = total_user_count,

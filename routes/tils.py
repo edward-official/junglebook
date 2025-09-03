@@ -7,7 +7,8 @@ tils_bp = Blueprint('tils', __name__, url_prefix='/tils')
 @jwt_required()
 def day():
   database = current_app.config['DB']
-  date_str = request.form.get("date")
+  date_str = request.args.get("date")
+  print(date_str)
   if not date_str:
     return jsonify({"error": "date parameter is required"})
   
@@ -31,7 +32,6 @@ def day():
       "createdAt": document.get("createdAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("createdAt") else None,
       "updatedAt": document.get("updatedAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("updatedAt") else None
     })
-
   return jsonify({"data": response_data})
 
 @tils_bp.route("/heatmap", methods=["GET"])

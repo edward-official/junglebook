@@ -8,15 +8,19 @@ from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from routes.view_router import render_blueprint
 from routes.tils import tils_bp
 from routes.auth import auth_bp
+from dotenv import load_dotenv
+import os
+
 
 app = Flask(__name__)
 mongoDB = MongoClient('localhost', 27017)
 database = mongoDB.jungle_book
 bcrypt = Bcrypt(app)
+load_dotenv()
 
 app.config['DB'] = database
 app.config['BCRYPT'] = bcrypt
-app.config['JWT_SECRET_KEY'] = "super-secret-key"
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_SAMESITE"] = "Strict"

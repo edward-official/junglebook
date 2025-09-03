@@ -67,6 +67,9 @@ def dashboard():
         today_til_count = today_til_count,
         yesterday_til_count = yesterday_til_count,
         total_user_count = total_user_count,
+        days_so_far = days_so_far,
+        year = year,
+        month = month,
     )
 
 @render_blueprint.route("/list")

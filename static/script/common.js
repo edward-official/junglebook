@@ -1,6 +1,6 @@
 (function (window) {
   const App = (window.App = window.App || {});
-  
+
   // DOM helpers
   App.dom = {
     // Vanilla-only: accepts Element, NodeList, Array<Element>, or selector string
@@ -23,6 +23,18 @@
     },
   };
 
-  $.ajaxSetup({ xhrFields: { withCredentials: true } });
+  $.ajaxSetup({
+    xhrFields: { withCredentials: true },
+    crossDomain: true,
+    beforeSend: function (xhr) {
+      const t = getCookie('csrf_access_token');
+      if (t) xhr.setRequestHeader('X-CSRF-Token', t);
+    }
+  });
+
+  function getCookie(name) {
+    const m = document.cookie.match('(?:^|; )' + name.replace(/([$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)');
+    return m ? decodeURIComponent(m[1]) : null;
+  }
 
 })(window);

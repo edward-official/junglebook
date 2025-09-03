@@ -28,9 +28,10 @@ def heatmap():
     "data": data,
   })
 
-@tils_bp.route("/commit", methods=["GET"])
+@tils_bp.route("/commit", methods=["POST"])
 @jwt_required()
 def commit():
+  print("🚨 check point committing TIL")
   current_user = get_jwt_identity()
   user_name = current_user
   url = request.form.get("url")
@@ -45,6 +46,7 @@ def commit():
     "username": user_name,
     "createdAt": {"$gte": start_of_day, "$lte": end_of_day}
   })
+  # print("🚨 " + existing)
 
   if existing:
     database.tils.update_one(
@@ -54,7 +56,7 @@ def commit():
         "url": url
       }}
     )
-    return jsonify({"message": "TIL updated", "status": "updated"})
+    return jsonify({"result": "success", "status": "updated"})
   else:
     database.tils.insert_one({
       "username": user_name,
@@ -62,4 +64,4 @@ def commit():
       "updatedAt": None,
       "url": url
     })
-    return jsonify({"message": "TIL created", "status": "created"})
+    return jsonify({"result": "success", "status": "created"})

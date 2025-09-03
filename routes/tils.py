@@ -52,13 +52,13 @@ def heatmap():
 @tils_bp.route("/commit", methods=["POST"])
 @jwt_required()
 def commit():
-  print("🚨 check point committing TIL")
+  # print("🚨 check point committing TIL")
   current_user = get_jwt_identity()
   user_name = current_user
   url = request.form.get("url")
-  date_str = request.form.get("date")
-  print(date_str)
-  commit_date = datetime.fromisoformat(date_str)
+  learned_date = request.form.get("date")
+  # commit_date = datetime.fromisoformat(learned_date)
+  commit_date = datetime.now(timezone.utc)
 
   start_of_day = datetime(commit_date.year, commit_date.month, commit_date.day)
   end_of_day = datetime(commit_date.year, commit_date.month, commit_date.day, 23, 59, 59)
@@ -82,7 +82,7 @@ def commit():
   else:
     database.tils.insert_one({
       "username": user_name,
-      "learnedDate": date_str,
+      "learnedDate": learned_date,
       "createdAt": commit_date,
       "updatedAt": None,
       "url": url

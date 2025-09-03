@@ -8,18 +8,12 @@ tils_bp = Blueprint('tils', __name__, url_prefix='/tils')
 def day():
   database = current_app.config['DB']
   date_str = request.args.get("date")
+  
   if not date_str:
     return jsonify({"error": "date parameter is required"})
-  
-  try:
-    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-  except ValueError:
-    return jsonify({"error": "invalid date format, expected YYYY-MM-DD"})
-  
-  start = date_obj
-  end = date_obj + timedelta(days=1)
+
   documents = database.tils.find(
-    {"createdAt": {"$gte": start, "$lt": end}},
+    {"learnedDate": date_str},
     {"_id": 0, "username": 1, "url": 1, "createdAt": 1, "updatedAt": 1}
   )
 
@@ -38,7 +32,7 @@ def day():
 def heatmap():
   number_of_total_users = len(list(current_app.config["DB"].users.find({}, {"_id": 0})))
   pipeline = [
-    {"$group": {"_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}}, "numberOfPosts": {"$sum": 1}}},
+    {"$group": {"_id": "$learnedDate", "numberOfPosts": {"$sum": 1}}},
     {"$project": {"date": "$_id", "numberOfPosts": 1, "_id": 0}},
     {"$sort": {"date": 1}}
   ]
@@ -52,23 +46,17 @@ def heatmap():
 @tils_bp.route("/commit", methods=["POST"])
 @jwt_required()
 def commit():
-  print("🚨 check point committing TIL")
   current_user = get_jwt_identity()
   user_name = current_user
   url = request.form.get("url")
-  date_str = request.form.get("date")
-  print(date_str)
-  commit_date = datetime.fromisoformat(date_str)
-
-  start_of_day = datetime(commit_date.year, commit_date.month, commit_date.day)
-  end_of_day = datetime(commit_date.year, commit_date.month, commit_date.day, 23, 59, 59)
+  learned_date = request.form.get("date")
+  commit_date = datetime.now(timezone.utc)
 
   database = current_app.config["DB"]
   existing = database.tils.find_one({
     "username": user_name,
-    "createdAt": {"$gte": start_of_day, "$lte": end_of_day}
+    "learnedDate": learned_date
   })
-  # print("🚨 " + existing)
 
   if existing:
     database.tils.update_one(
@@ -82,7 +70,7 @@ def commit():
   else:
     database.tils.insert_one({
       "username": user_name,
-      "learnedDate": date_str,
+      "learnedDate": learned_date,
       "createdAt": commit_date,
       "updatedAt": None,
       "url": url

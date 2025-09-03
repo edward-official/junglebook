@@ -46,3 +46,19 @@ def is_valid_date(date_str):
         return True
     except ValueError:
         return False
+def profile():
+    return render_template("list.html")
+
+@render_blueprint.route("/main-statistics")
+@jwt_required()
+def main_statistics():
+    database = current_app.config["DB"]
+    username = get_jwt_identity()
+    
+    return render_template(
+        "main.html",
+        my_streak = 7,
+        my_month = "(22일/27일)",
+        today = "(25명/62명)",
+        yesterday = "(57명/62명)",
+    )

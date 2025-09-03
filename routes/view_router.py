@@ -26,15 +26,26 @@ def signup():
 @jwt_required()
 def dashboard():
     database = current_app.config["DB"]
+    username = get_jwt_identity()
     now_kst = datetime.now(ZoneInfo("Asia/Seoul"))
     today_str = now_kst.strftime("%Y-%m-%d")
     yesterday_str = (now_kst - timedelta(days=1)).strftime("%Y-%m-%d")
+
     year = now_kst.year
     month = now_kst.month
     days_so_far = now_kst.day
+
+    prefix = f"{year}-{str(month).zfill(2)}"
+    numberOfDaysWithCommitThisMonth = len(list(database.tils.find({"username": username, "learnedDate": {"$regex": f"^{prefix}"}}, {"_id": 0})))
+
     total_user_count = database.users.count_documents({})
     today_til_count = database.tils.count_documents({"learnedDate": today_str})
     yesterday_til_count = database.tils.count_documents({"learnedDate": yesterday_str})
+
+    today_til = database.tils.find_one({"username": username, "learnedDate": today_str},{"_id": 0, "streak": 1})
+    streak_today = today_til.get("streak") if today_til else 0
+    yesterday_til = database.tils.find_one({"username": username, "learnedDate": yesterday_str},{"_id": 0, "streak": 1})
+    streak_yesterday = yesterday_til.get("streak") if yesterday_til else 0
     """
     [my_streak 구하는 방법]
     1. 내가올린TIL을다가져오기 > 가장 최근 TIL이 오늘 또는 어제인지 확인 > 그렇다면 하루 씩 과거로 움직이면서 TIL이 계속될 때까지 숫자 세기
@@ -43,8 +54,8 @@ def dashboard():
     
     return render_template(
         "main.html",
-        # my_streak = 내가현재연속으로TIL을올린일수,
-        # my_month = "(이번달내가TIL을등록한일수/이번달첫날부터오늘까지의일수)",
+        my_streak = max(streak_today, streak_yesterday),
+        my_month = f"{numberOfDaysWithCommitThisMonth}/{days_so_far})",
         today_til_count = today_til_count,
         yesterday_til_count = yesterday_til_count,
         total_user_count = total_user_count,
@@ -72,7 +83,3 @@ def is_valid_date(date_str):
         return False
 def profile():
     return render_template("list.html")
-
-
-
-    

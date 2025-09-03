@@ -20,6 +20,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_SAMESITE"] = "Strict"
 app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+app.config["NUMBER_OF_TOTAL_USERS"] = 70
 jwt = JWTManager(app)
 
 

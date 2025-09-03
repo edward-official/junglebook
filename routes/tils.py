@@ -79,9 +79,9 @@ def commit():
       "isCommitOnTime": True,
     })
     previous_streak = previous_til.get("streak") if previous_til else 0
-    streak = previous_streak + 1 if is_commit_on_time else 0
 
     is_commit_on_time = datetime.strptime(learned_date, "%Y-%m-%d").date()==commit_date.date()
+    streak = previous_streak + 1 if is_commit_on_time else 0
 
     database.tils.insert_one({
       "username": user_name,

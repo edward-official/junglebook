@@ -11,6 +11,8 @@ from routes.tils import tils_bp
 from routes.auth import auth_bp
 from routes.push_notifications import push_bp
 from dlatl import start_scheduler
+from dotenv import load_dotenv
+import os
 
 class Config:
     SCHEDULER_API_ENABLED = True
@@ -18,10 +20,11 @@ app = Flask(__name__)
 mongoDB = MongoClient('localhost', 27017)
 database = mongoDB.jungle_book
 bcrypt = Bcrypt(app)
+load_dotenv()
 
 app.config['DB'] = database
 app.config['BCRYPT'] = bcrypt
-app.config['JWT_SECRET_KEY'] = "super-secret-key"
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_SECURE"] = True
 app.config["JWT_COOKIE_SAMESITE"] = "Strict"
@@ -55,7 +58,7 @@ start_scheduler(app)
 
 def _redirect_to_login():
   resp = redirect(url_for("main.login"))
-  unset_jwt_cookies(resp)  # 혹시 남은 JWT 쿠키 깔끔히 제거
+  unset_jwt_cookies(resp)
   return resp
 
 @jwt.unauthorized_loader

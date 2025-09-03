@@ -1,5 +1,5 @@
 $(function () {
-  const dateVal = ($('#tilDate').val() || '').trim();
+  const dateVal = new URLSearchParams(window.location.search).get('date');
   let sortAsc = true; // 기본: createdAt 오름차순
 
   $('#search').on('input', applySearch);

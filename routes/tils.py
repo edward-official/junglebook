@@ -58,6 +58,7 @@ def commit():
   user_name = current_user
   url = request.form.get("url")
   date_str = request.form.get("date")
+  print(date_str)
   commit_date = datetime.fromisoformat(date_str)
 
   start_of_day = datetime(commit_date.year, commit_date.month, commit_date.day)
@@ -82,6 +83,7 @@ def commit():
   else:
     database.tils.insert_one({
       "username": user_name,
+      "learnedDate": date_str,
       "createdAt": commit_date,
       "updatedAt": None,
       "url": url

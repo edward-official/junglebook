@@ -1,4 +1,4 @@
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended import jwt_required
 from flask import Blueprint, render_template
 
 render_blueprint = Blueprint("main", __name__, url_prefix="/")

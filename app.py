@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask.json.provider import JSONProvider
 from bson import ObjectId
 import json
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from routes.view_router import render_blueprint
 from routes.tils import tils_bp
 from routes.auth import auth_bp
@@ -41,6 +41,24 @@ app.json = CustomJSONProvider(app)
 app.register_blueprint(tils_bp)
 app.register_blueprint(render_blueprint)
 app.register_blueprint(auth_bp)
+
+
+def _redirect_to_login():
+  resp = redirect(url_for("main.login"))
+  unset_jwt_cookies(resp)  # 혹시 남은 JWT 쿠키 깔끔히 제거
+  return resp
+
+@jwt.unauthorized_loader
+def handle_missing_token(reason):
+  return _redirect_to_login()
+
+@jwt.invalid_token_loader
+def handle_invalid_token(reason):
+  return _redirect_to_login()
+
+@jwt.expired_token_loader
+def handle_expired_token(jwt_header, jwt_payload):
+  return _redirect_to_login()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

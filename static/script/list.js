@@ -36,24 +36,18 @@ $(function () {
       : "#";
     const thumb = getThumbUrl(href);
 
-    return (
-      '<li class="px-3 sm:px-4 py-2.5 hover:bg-accent/10 transition">' +
-      '<div class="flex items-center justify-between gap-3">' +
-      '<div class="text-[15px] sm:text-base font-semibold text-jungle">' +
-      safeName +
-      "</div>" +
-      '<a href="' +
-      safeHref +
-      '" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center bg-white ring-1 ring-accent/20 hover:ring-accent/40 shadow-sm">' +
-      (thumb
-        ? '<img src="' +
-        thumb +
-        '" alt="" class="w-full h-full object-cover" />'
-        : '<span class="text-accent font-bold">↗</span>') +
-      "</a>" +
-      "</div>" +
-      "</li>"
-    );
+    return `
+      <li class="px-3 sm:px-4 py-2.5 hover:bg-accent/10 transition">
+        <div class="flex items-center justify-between gap-3">
+          <div class="text-[15px] sm:text-base font-semibold text-jungle">${safeName}</div>
+          <a href="${safeHref}" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center bg-white ring-1 ring-accent/20 hover:ring-accent/40 shadow-sm">
+            ${thumb
+              ? `<img src="${thumb}" alt="" class="w-full h-full object-cover" />`
+              : '<span class="text-accent font-bold">↗</span>'}
+          </a>
+        </div>
+      </li>
+    `;
   }
 
   function getThumbUrl(href) {
@@ -104,6 +98,13 @@ $(function () {
     renderList(filtered);
   }
 
+  // 간단한 정규식으로 http/https 절대 URL 여부만 확인
+  function isValidWebUrlSimple(input) {
+    const s = String(input || '').trim();
+    // http(s):// 로 시작하고 공백이 없는 경우를 허용
+    return /^https?:\/\/[^\s]+$/i.test(s);
+  }
+
   function updateSortLabel() {
     const $label = $("#sortDir span");
     if ($label.length) $label.text(sortAsc ? "오름차순" : "내림차순");
@@ -118,6 +119,9 @@ $(function () {
   $(document).on("click", "#saveMyUrl", function () {
     let url = ($("#myUrl").val() || "").trim();
     if (!url) return alert("URL을 입력해 주세요.");
+    if (!isValidWebUrlSimple(url)) {
+      return alert("유효한 링크를 입력해 주세요. 예: https://example.com");
+    }
 
     $.ajax({
       url: "/tils/commit",

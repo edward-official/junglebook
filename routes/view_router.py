@@ -63,13 +63,13 @@ def dashboard():
 
 @render_blueprint.route("/list")
 @jwt_required()
-def list():
+def til_list():
     current_user = get_jwt_identity()
     database = current_app.config['DB']
     date = request.args.get("date")
     today = datetime.now().strftime("%Y-%m-%d")
     if not date or not is_valid_date(date):
-        return redirect(url_for("main.list", date=today))
+        return redirect(url_for("main.til_list", date=today))
 
     data = database.tils.find_one({"username": current_user, "learnedDate": date})
 

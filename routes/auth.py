@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app
+from datetime import datetime
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -42,6 +43,11 @@ def login():
     if not bcrypt.check_password_hash(user['password'], password):
         return jsonify({"result": "fail", "msg": "invalid credentials"})
     
+    database.users.update_one(
+        {"userid": userid},
+        {"$set": {"last_login": datetime.utcnow()}}
+    )
+
     access_token = create_access_token(identity=userid)
     response = jsonify({"result": "success"})
     set_access_cookies(response, access_token)

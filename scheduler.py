@@ -11,9 +11,8 @@ def schedule_inactive_user_notification(app):
         
         database = app.config['DB']
         users_collection = database.users
-        
         # 7일 이상 미접속 기준 시간
-        days_inactive = 0
+        days_inactive = 7
         cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=days_inactive)
         
         # 대상 사용자 조회: 마지막 로그인이 7일 이전이고, 푸시 구독 정보가 있는 사용자
@@ -21,6 +20,7 @@ def schedule_inactive_user_notification(app):
             "last_login": {"$lte": cutoff},
             "push_subscription_json": {"$exists": True}
         }))
+
 
         if not inactive_users:
             print(f"결과: {days_inactive}일 이상 미접속한 구독자가 없습니다.")

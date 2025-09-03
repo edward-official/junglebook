@@ -1,13 +1,21 @@
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🔍 푸시 알림 스크립트 시작');
     
-    const token = localStorage.getItem('access_token');
-    console.log('🔍 토큰 확인:', token ? '토큰 있음' : '토큰 없음');
-    
-    if (!token) {
-        console.log('❌ 토큰이 없어서 푸시 구독 로직을 실행하지 않습니다.');
-        return;
-    }
     
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         console.warn('❌ 푸시 알림을 지원하지 않는 브라우저입니다.');
@@ -15,12 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const modal = document.getElementById('push-notification-modal');
-    console.log('🔍 모달 요소 확인:', modal ? '찾음' : '찾을 수 없음');
     if (!modal) return;
 
     const acceptBtn = document.getElementById('push-accept-btn');
     const denyBtn = document.getElementById('push-deny-btn');
-    console.log('🔍 버튼 요소 확인:', acceptBtn ? '허용 버튼 찾음' : '허용 버튼 없음', denyBtn ? '거부 버튼 찾음' : '거부 버튼 없음');
 
     async function checkSubscriptionAndShowModal() {
         try {
@@ -35,10 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.style.display = 'block';
             } else if (subscription && Notification.permission === 'granted') {
                 console.log('이미 알림을 구독 중입니다. 서버와 정보를 동기화합니다.');
+                const csrfToken = getCookie('csrf_access_token');
                 fetch('/api/push/subscribe', {
                     method: 'POST',
                     body: JSON.stringify(subscription),
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken 
+                    }
                 });
             }
         } catch (error) {
@@ -47,17 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     acceptBtn.addEventListener('click', async () => {
-        console.log('🔍 허용 버튼 클릭됨');
+        modal.style.display = 'none';
         const permission = await Notification.requestPermission();
-        console.log('🔍 알림 권한 결과:', permission);
         if (permission === 'granted') {
             await subscribeUser();
         }
-        modal.style.display = 'none';
     });
 
     denyBtn.addEventListener('click', () => {
-        console.log('🔍 거부 버튼 클릭됨');
         modal.style.display = 'none';
     });
 
@@ -74,10 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 applicationServerKey
             });
             
+            const csrfToken = getCookie('csrf_access_token');
             await fetch('/api/push/subscribe', {
                 method: 'POST',
                 body: JSON.stringify(subscription),
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
             });
             console.log('✅ 알림 구독이 성공적으로 완료되었습니다.');
         } catch (error) {

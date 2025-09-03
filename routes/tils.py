@@ -1,16 +1,38 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 tils_bp = Blueprint('tils', __name__, url_prefix='/tils')
 
-# @tils_bp.route('/day', methods=['GET'])
-# @jwt_required()
-# def day():
-#   # 해당일의 모든 til 내역을 반환 > 잔디, hover, 내역생성
-#   day = request.form.get["date"]
-#   database = current_app.config['DB']
-#   users = database.users
-#   return
+@tils_bp.route('/day', methods=['GET'])
+@jwt_required()
+def day():
+  database = current_app.config['DB']
+  date_str = request.form.get("date")
+  if not date_str:
+    return jsonify({"error": "date parameter is required"})
+  
+  try:
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+  except ValueError:
+    return jsonify({"error": "invalid date format, expected YYYY-MM-DD"})
+  
+  start = date_obj
+  end = date_obj + timedelta(days=1)
+  documents = database.tils.find(
+    {"createdAt": {"$gte": start, "$lt": end}},
+    {"_id": 0, "username": 1, "url": 1, "createdAt": 1, "updatedAt": 1}
+  )
+
+  response_data = []
+  for document in documents:
+    response_data.append({
+      "userName": document.get("username"),
+      "url": document.get("url"),
+      "createdAt": document.get("createdAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("createdAt") else None,
+      "updatedAt": document.get("updatedAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("updatedAt") else None
+    })
+
+  return jsonify({"data": response_data})
 
 @tils_bp.route("/heatmap", methods=["GET"])
 @jwt_required()

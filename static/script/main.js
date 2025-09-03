@@ -38,4 +38,16 @@ $(() => {
     .done((res) => renderHeatmap(res))
     .fail(() => renderHeatmap({ totalUser: 0, data: [] }));
 
+  $('#logoutBtn').on('click', function () {
+    $.ajax({
+      url: '/auth/logout',
+      method: 'GET',
+      xhrFields: { withCredentials: true },
+      timeout: 10000,
+    })
+      .always(function () {
+        window.location.href = '/login';
+      });
+  });
+
 })

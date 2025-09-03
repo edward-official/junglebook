@@ -47,6 +47,12 @@ def login():
     set_access_cookies(response, access_token)
     return response
 
+@auth_bp.route('/logout', methods=['GET', 'POST'])
+def logout():
+    response = jsonify({"result": "success"})
+    unset_jwt_cookies(response)
+    return response
+
 @auth_bp.route('/main', methods=['GET'])
 @jwt_required()
 def main():

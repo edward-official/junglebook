@@ -8,7 +8,6 @@ tils_bp = Blueprint('tils', __name__, url_prefix='/tils')
 def day():
   database = current_app.config['DB']
   date_str = request.args.get("date")
-  print(date_str)
   if not date_str:
     return jsonify({"error": "date parameter is required"})
   

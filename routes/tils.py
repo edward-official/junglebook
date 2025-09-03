@@ -1,3 +1,4 @@
+import html
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, timezone, timedelta
@@ -21,7 +22,7 @@ def day():
   for document in documents:
     response_data.append({
       "userName": document.get("username"),
-      "url": document.get("url"),
+      "url": html.escape(document.get("url") or ""),
       "createdAt": document.get("createdAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("createdAt") else None,
       "updatedAt": document.get("updatedAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("updatedAt") else None
     })

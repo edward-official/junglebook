@@ -1,8 +1,16 @@
-from flask_jwt_extended import jwt_required
-from flask import Blueprint, render_template
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask import Blueprint, render_template, redirect, url_for
 
 render_blueprint = Blueprint("main", __name__, url_prefix="/")
 
+@render_blueprint.route("/")
+@jwt_required(optional=True)
+def index():
+    current_user = get_jwt_identity()
+    if current_user:
+        return redirect(url_for("main.dashboard"))
+    else:
+        return redirect(url_for("main.login"))
 
 @render_blueprint.route("/login")
 def login():

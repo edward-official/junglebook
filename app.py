@@ -45,7 +45,7 @@ app.register_blueprint(auth_bp)
 
 def _redirect_to_login():
   resp = redirect(url_for("main.login"))
-  unset_jwt_cookies(resp)  # 혹시 남은 JWT 쿠키 깔끔히 제거
+  unset_jwt_cookies(resp)
   return resp
 
 @jwt.unauthorized_loader

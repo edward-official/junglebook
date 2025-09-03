@@ -9,18 +9,6 @@ push_bp = Blueprint('push', __name__)
 def get_config(key):
     return current_app.config.get(key)
 
-def require_api_key(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get('Authorization')
-        admin_secret_key = get_config('ADMIN_SECRET_KEY')
-        if not auth_header or not auth_header.startswith('Bearer '):
-            return jsonify({"error": "Authorization header is missing or invalid"}), 401
-        token = auth_header.split(' ')[1]
-        if token != admin_secret_key:
-            return jsonify({"error": "Invalid secret key"}), 403
-        return f(*args, **kwargs)
-    return decorated_function
 
 @push_bp.route('/service-worker.js')
 def service_worker():
@@ -60,35 +48,23 @@ def unsubscribe():
     return jsonify({'message': '구독이 성공적으로 해지되었습니다.'}), 200
 
 
-
-@push_bp.route('/api/push/send-inactive', methods=['POST'])
-@require_api_key
-def send_to_inactive_users():
-    database = current_app.config['DB']
+def send_web_push(users_to_notify, payload):
+    """
+    주어진 사용자 목록에게 웹 푸시 알림을 전송합니다.
+    
+    :param users_to_notify: 알림을 받을 사용자 객체의 리스트 (DB에서 조회한 결과)
+    :param payload: 알림에 담길 데이터 (dict 형태, e.g., {'title': '...', 'body': '...'})
+    """
+    database = get_config('DB')
     users = database.users
-
-    data = request.get_json()
-    days_inactive = data.get('days', 7)
-    title = data.get('title', '오랫동안 기다렸어요!')
-    body = data.get('body', '다시 방문해서 새로운 소식을 확인해보세요!')
-
-    cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=days_inactive)
-    inactive_users = list(users.find({
-        "last_login": {"$lte": cutoff},
-        "push_subscription_json": {"$exists": True}
-    }))
-
-    if not inactive_users:
-        return jsonify({'message': f'{days_inactive}일 이상 미접속한 구독자가 없습니다.'}), 200
-
-    payload = {'title': title, 'body': body}
-    success_count, failure_count = 0, 0
     vapid_claims = {"sub": get_config('VAPID_EMAIL')}
     vapid_private_key = get_config('VAPID_PRIVATE_KEY')
+    
+    success_count, failure_count = 0, 0
 
-    for user in inactive_users:
-        sub_info = json.loads(user['push_subscription_json'])
+    for user in users_to_notify:
         try:
+            sub_info = json.loads(user['push_subscription_json'])
             webpush(
                 subscription_info=sub_info,
                 data=json.dumps(payload),
@@ -98,62 +74,16 @@ def send_to_inactive_users():
             success_count += 1
         except WebPushException as ex:
             failure_count += 1
+            # 구독이 만료되었거나(Not Found, Gone) 잘못된 경우 DB에서 구독 정보 삭제
             if ex.response and ex.response.status_code in [404, 410]:
+                print(f"만료된 구독 정보 삭제 (사용자 ID: {user['userid']})")
                 users.update_one({"userid": user['userid']}, {"$unset": {"push_subscription_json": ""}})
             else:
                 print(f"알림 전송 실패 (사용자 ID: {user['userid']}): {ex}")
-
-    return jsonify({
-        'message': '알림 전송이 완료되었습니다.',
-        'total': len(inactive_users),
-        'success': success_count,
-        'failure': failure_count
-    }), 200
-
-
-@push_bp.route('/api/push/send-all', methods=['POST'])
-@require_api_key
-def send_to_all_users():
-    database = current_app.config['DB']
-    users = database.users
-
-    # 요청에서 알림 제목/내용 받기
-    data = request.get_json()
-    title = data.get('title', '전체 알림')
-    body = data.get('body', '모든 사용자에게 보내는 테스트 알림입니다.')
-
-    # push_subscription_json이 있는 모든 사용자 가져오기
-    subscribed_users = list(users.find({"push_subscription_json": {"$exists": True}}))
-
-    if not subscribed_users:
-        return jsonify({'message': '푸시 구독한 사용자가 없습니다.'}), 200
-
-    payload = {'title': title, 'body': body}
-    success_count, failure_count = 0, 0
-    vapid_claims = {"sub": get_config('VAPID_EMAIL')}
-    vapid_private_key = get_config('VAPID_PRIVATE_KEY')
-
-    for user in subscribed_users:
-        sub_info = json.loads(user['push_subscription_json'])
-        try:
-            webpush(
-                subscription_info=sub_info,
-                data=json.dumps(payload),
-                vapid_private_key=vapid_private_key,
-                vapid_claims=vapid_claims.copy()
-            )
-            success_count += 1
-        except WebPushException as ex:
+        except Exception as e:
+            # json.loads 실패 등 기타 예외 처리
             failure_count += 1
-            # 구독 만료된 경우 삭제
-            if ex.response and ex.response.status_code in [404, 410]:
-                users.update_one({"userid": user['userid']}, {"$unset": {"push_subscription_json": ""}})
-            else:
-                print(f"알림 전송 실패 (사용자 ID: {user['userid']}): {ex}")
+            print(f"알림 처리 중 오류 발생 (사용자 ID: {user['userid']}): {e}")
 
-    return jsonify({
-        'message': '전체 알림 전송이 완료되었습니다.',
-        'total': len(subscribed_users),
-        'success': success_count,
-        'failure': failure_count
-    }), 200
+    print(f"알림 전송 결과: 총 {len(users_to_notify)}명 중 성공 {success_count}명, 실패 {failure_count}명")
+    return success_count, failure_count

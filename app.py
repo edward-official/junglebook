@@ -10,8 +10,10 @@ from routes.view_router import render_blueprint
 from routes.tils import tils_bp
 from routes.auth import auth_bp
 from routes.push_notifications import push_bp
+from dlatl import start_scheduler
 
-
+class Config:
+    SCHEDULER_API_ENABLED = True
 app = Flask(__name__)
 mongoDB = MongoClient('localhost', 27017)
 database = mongoDB.jungle_book
@@ -49,7 +51,7 @@ app.register_blueprint(tils_bp)
 app.register_blueprint(render_blueprint)
 app.register_blueprint(auth_bp)
 app.register_blueprint(push_bp)
-
+start_scheduler(app)
 
 def _redirect_to_login():
   resp = redirect(url_for("main.login"))

@@ -1,0 +1,12 @@
+.ch-subdomain-bg {
+  fill: #dfdfdf;   /* 데이터 없는 기본 셀 */
+}
+
+/* SVG 바깥쪽 테두리가 잘리지 않도록 */
+#cal-heatmap svg {
+  overflow: visible;
+}
+
+.ch-subdomain-bg.highlight:last-of-type {
+  stroke: #006644;
+}

@@ -21,9 +21,9 @@ $(() => {
         }
       },
       domain: { type: "month", label: { text: 'MMM', textAlign: 'start', position: 'top' } },
-      subDomain: { type: 'ghDay', radius: 2, width: 11, height: 11, gutter: 4 },
+      subDomain: { type: 'ghDay', radius: 2, width: 15, height: 15, gutter: 5},
       start,
-      date: { highlight: [new Date()] },
+      date: { highlight: [new Date(), new Date("2026-01-29")] },
       range: 5,
     }, [[
       CalendarLabel,
@@ -31,7 +31,10 @@ $(() => {
     ], [
       Tooltip,
       { text: (date, value, dayjsDate) => `${dayjsDate.format('YYYY-MM-DD')}<br/>참여자 수: ${value || 0} / ${totalUser}` }
-    ]]);
+    ]]).then(() => {
+      //수료일 강조
+      $('.ch-subdomain-bg.highlight').last().css('stroke', '#E64A19');
+    });
   }
 
   $.getJSON('/tils/heatmap')

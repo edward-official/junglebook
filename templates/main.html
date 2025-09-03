@@ -25,6 +25,7 @@
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='script/common.js') }}"></script>
   <script src="{{ url_for('static', filename='script/main.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/heatmap.css') }}">
 </head>
 
 <body class="min-h-screen bg-jungle text-jungle/90 antialiased font-sans">
@@ -71,10 +72,10 @@
         <!-- Heatmap placeholder -->
         <section class="relative">
           <h2 class="text-xs font-extrabold tracking-wider text-jungle/50 uppercase">TIL Calendar</h2>
-          <div class="mt-3 rounded-xl ring-1 ring-inset ring-jungle/10 bg-jungle/5 p-4 overflow-hidden">
+          <div class="mt-3 rounded-xl ring-1 ring-inset ring-jungle/10 bg-jungle/[0.03] p-4 overflow-hidden">
             <!-- Replace this with your actual heatmap implementation -->
             <div id="heatmap" class="grid grid-cols-14 gap-1.5">
-              <div id="cal-heatmap"></div>
+              <div id="cal-heatmap" class="m-0 mx-auto"></div>
             </div>
           </div>
         </section>

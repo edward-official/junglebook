@@ -2,6 +2,5 @@ Flask
 pymongo
 flask-bcrypt
 flask-jwt-extended
-bson
 pywebpush
 python-dotenv

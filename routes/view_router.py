@@ -55,7 +55,7 @@ def dashboard():
     return render_template(
         "main.html",
         my_streak = max(streak_today, streak_yesterday),
-        my_month = f"{numberOfDaysWithCommitThisMonth}/{days_so_far})",
+        my_month = f"{numberOfDaysWithCommitThisMonth}/{days_so_far}",
         today_til_count = today_til_count,
         yesterday_til_count = yesterday_til_count,
         total_user_count = total_user_count,

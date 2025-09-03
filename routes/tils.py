@@ -13,18 +13,19 @@ def day():
   if not date_str:
     return jsonify({"error": "date parameter is required"})
 
-  documents = database.tils.find(
+  tils = database.tils.find(
     {"learnedDate": date_str},
     {"_id": 0, "username": 1, "url": 1, "createdAt": 1, "updatedAt": 1}
   )
 
   response_data = []
-  for document in documents:
+  for til in tils:
+    user_name = database.users.find({"userid": til.get("username")}, {"_id": 0}).get("username")
     response_data.append({
-      "userName": document.get("username"),
-      "url": html.escape(document.get("url") or ""),
-      "createdAt": document.get("createdAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("createdAt") else None,
-      "updatedAt": document.get("updatedAt").strftime("%Y-%m-%d %H:%M:%S") if document.get("updatedAt") else None
+      "userName": user_name,
+      "url": html.escape(til.get("url") or ""),
+      "createdAt": til.get("createdAt").strftime("%Y-%m-%d %H:%M:%S") if til.get("createdAt") else None,
+      "updatedAt": til.get("updatedAt").strftime("%Y-%m-%d %H:%M:%S") if til.get("updatedAt") else None
     })
   return jsonify({"data": response_data})
 

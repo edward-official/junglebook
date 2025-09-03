@@ -48,7 +48,7 @@
         <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold text-jungle tracking-tight flex items-center gap-2">
           <span>2025년 10월 2일</span>
           <span class="text-jungle/40">·</span>
-          <span class="text-accent">7 days streak!!</span>
+          <span class="text-accent">{{ my_streak }} days streak!!</span>
           <span class="ml-1">🔥</span>
         </h1>
 
@@ -56,7 +56,7 @@
         <div class="mt-3 flex flex-wrap items-center gap-2">
           <span
             class="inline-flex items-center gap-1 rounded-full bg-accent/15 text-jungle px-3 py-1 text-xs font-semibold ring-1 ring-inset ring-accent/30">
-            🏆 연속 최고 기록: <span class="font-bold">{{ my_streak }}</span>일
+            🏆 연속 최고 기록: <span class="font-bold">{{ my_best_streak }}</span>일
           </span>
           <span
             class="inline-flex items-center gap-1 rounded-full bg-jungle/5 text-jungle px-3 py-1 text-xs font-semibold ring-1 ring-inset ring-jungle/10">

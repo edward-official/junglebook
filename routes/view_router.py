@@ -46,6 +46,13 @@ def dashboard():
     streak_today = today_til.get("streak") if today_til else 0
     yesterday_til = database.tils.find_one({"username": username, "learnedDate": yesterday_str},{"_id": 0, "streak": 1})
     streak_yesterday = yesterday_til.get("streak") if yesterday_til else 0
+
+    my_tils = list(database.tils.find({"username": username}, {"_id": 0}))
+    my_best_streak = 0
+    for til in my_tils:
+        streak = til.get("streak", 0)
+        if streak > my_best_streak:
+            my_best_streak = streak
     """
     [my_streak 구하는 방법]
     1. 내가올린TIL을다가져오기 > 가장 최근 TIL이 오늘 또는 어제인지 확인 > 그렇다면 하루 씩 과거로 움직이면서 TIL이 계속될 때까지 숫자 세기
@@ -54,6 +61,7 @@ def dashboard():
     
     return render_template(
         "main.html",
+        my_best_streak = my_best_streak,
         my_streak = max(streak_today, streak_yesterday),
         my_month = f"{numberOfDaysWithCommitThisMonth}/{days_so_far}",
         today_til_count = today_til_count,

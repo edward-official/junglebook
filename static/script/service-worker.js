@@ -8,7 +8,7 @@ self.addEventListener('push', event => {
     const title = data.title || '새로운 알림';
     const options = {
         body: data.body || '새로운 내용이 도착했습니다.',
-        icon: data.icon, 
+        icon: "https://junglebook.store/static/images/logo.png", //정글북 아이콘 
         data: {
             url: data.url // 알림 클릭 시 이동할 URL
         }

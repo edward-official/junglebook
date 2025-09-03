@@ -20,7 +20,7 @@ def day():
 
   response_data = []
   for til in tils:
-    user_name = database.users.find({"userid": til.get("username")}, {"_id": 0}).get("username")
+    user_name = database.users.find_one({"userid": til.get("username")}, {"_id": 0}).get("username")
     response_data.append({
       "userName": user_name,
       "url": html.escape(til.get("url") or ""),

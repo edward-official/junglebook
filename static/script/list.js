@@ -40,7 +40,7 @@ $(function () {
       <li class="px-3 sm:px-4 py-2.5 hover:bg-accent/10 transition">
         <div class="flex items-center justify-between gap-3">
           <div class="text-[15px] sm:text-base font-semibold text-jungle">${safeName}</div>
-          <a href="${safeHref}" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center bg-white ring-1 ring-accent/20 hover:ring-accent/40 shadow-sm">
+          <a href="${safeHref}" target="_blank" rel="noopener" class="w-10 h-10 overflow-hidden rounded-xl grid place-items-center bg-white ring-2 ring-accent/50 hover:ring-accent/40 shadow-sm">
             ${thumb
               ? `<img src="${thumb}" alt="" class="w-full h-full object-cover" />`
               : '<span class="text-accent font-bold">↗</span>'}

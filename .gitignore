@@ -2,3 +2,26 @@
 .venv
 texts
 
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 개발/테스트 파일
+TEST_GUIDE.md
+send_notification.py
+test_push.py
+
+# Mock DB 파일들
+mock_*.json
+
+# 환경변수 (실제 값은 별도 관리)
+.env
+
+# 로그 파일들
+*.log
+
+# IDE 설정
+.vscode/
+.idea/

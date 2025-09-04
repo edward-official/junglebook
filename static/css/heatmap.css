@@ -10,3 +10,12 @@
 .ch-subdomain-bg.highlight:last-of-type {
   stroke: #006644;
 }
+
+/* Hide scrollbar while keeping scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and old Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari, Opera */
+}
